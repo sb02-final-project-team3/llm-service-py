@@ -37,7 +37,10 @@
 docker build -t llm-service-py:local .
 docker run -d --name llm-service --network sb02-otboo-team3_default --env-file .env -p 8000:8000 llm-service-py:local
 ```
-컨테이너 -> 컨테이너 통신 시 spring-boot의 application.yml 파일 중 llm.base-url에 http://llm-service:8000이 적용될 수 있도록 수정 
+
+<img width="1661" height="720" alt="image" src="https://github.com/user-attachments/assets/09959e6c-5444-4e1c-89b1-e71f4733c676" />
+
+컨테이너 -> 컨테이너 통신 시 spring-boot의 application.yml 파일 중 llm.base-url에 http://llm-service:8000이 적용될 수 있도록 수정(기본 http://localhost:8000)
 
 
 ## 3) Spring 연동 요약
