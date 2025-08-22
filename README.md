@@ -38,8 +38,6 @@ docker build -t llm-service-py:local .
 docker run --rm -p 8000:8000 --env-file .env llm-service-py:local
 ```
 
-<img width="1270" height="720" alt="image" src="https://github.com/user-attachments/assets/162d3f6c-d7a6-4dae-b6e8-3fc55107e2bc" />
-docker 빌드 시, 다른 네트워크에서 실행되기 때문에 spring-boot application.yml의 llm.base-url 주소는 http://localhost:8000 그대로 두셔도 됩니다.
 
 
 ## 3) Spring 연동 요약
