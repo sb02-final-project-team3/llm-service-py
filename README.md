@@ -49,8 +49,8 @@ docker run -d \
 <img width="1516" height="750" alt="image" src="https://github.com/user-attachments/assets/ed394a95-c3c5-4759-a1ab-e3fee3e9d810" />
 
 
-컨테이너 -> 컨테이너 통신 시(이미지의 app-1 -> llm-service 통신)
-spring-boot의 application.yml 파일 중 llm.base-url에 http://llm-service:8000이 적용될 수 있도록 수정(기본 http://localhost:8000)
+같은 네트워크에서 통신 시 spring-boot의 application.yml 파일 중 llm.base-url에 http://llm-service:8000이 적용될 수 있도록 수정
+(이미지의 예시는 다른 네트워크 - 기본 http://localhost:8000 사용)
 
 
 ## 3) Spring 연동 요약
