@@ -1,14 +1,30 @@
 import os
-from fastapi import FastAPI
+import logging
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import Settings, get_settings
 from app.routers.extract import router as extract_router
+
+logging.basicConfig(
+    level=logging.DEBUG,  # DEBUG 레벨부터 출력
+    format="[%(asctime)s] [%(levelname)s] %(name)s: %(message)s"
+)
+logger = logging.getLogger("llm-service")
 
 settings: Settings = get_settings()
 
 app = FastAPI(title="LLM Service (Python)", version="0.1.0")
 
-# CORS (필요 시 조정)
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    logger.exception(f"Unhandled error at {request.url}")
+    return JSONResponse(
+        status_code=500,
+        content={"detail": "Internal Server Error"}
+    )
+
+# CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -17,7 +33,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# LangSmith tracing (옵션)
+# LangSmith tracing
 if settings.langsmith_tracing:
     os.environ["LANGCHAIN_TRACING_V2"] = "true"
     if settings.langsmith_api_key:
@@ -27,6 +43,7 @@ if settings.langsmith_tracing:
 
 @app.get("/health")
 def health():
+    logger.info("Health check requested")
     return {
         "status": "ok",
         "provider": settings.provider,
@@ -36,3 +53,5 @@ def health():
     }
 
 app.include_router(extract_router, prefix="/v1")
+
+logger.info("LLM Service initialized")
