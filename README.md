@@ -35,6 +35,7 @@
 ## 2) Docker 빌드 & 실행
 ```bash
 docker build -t llm-service-py:local .
+docker run -d --name llm-service --network sb02-otboo-team3_default --env-file .env -p 8000:8000 llm-service-py:local
 ```
 
 <img width="1516" height="750" alt="image" src="https://github.com/user-attachments/assets/ed394a95-c3c5-4759-a1ab-e3fee3e9d810" />
