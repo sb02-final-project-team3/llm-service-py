@@ -7,13 +7,20 @@ from app.models.schemas import VisionOut
 
 TYPE_ENUM = "TOP|BOTTOM|OUTER|DRESS|SHOES|ACCESSORY|ETC"
 
-def build_vision_chain(model_override: str | None = None) -> Runnable:
-    llm = make_llm(model_name=model_override)
+def build_vision_chain(
+    model_override: str | None = None,
+    provider_override: str | None = None) -> Runnable:
+    # ✅ Spring에서 온 provider_override를 make_llm에 그대로 전달
+    llm = make_llm(provider=provider_override, model_name=model_override)
+    # llm = make_llm(model_name=model_override)
     # Pydantic 구조화 출력 (LangChain이 JSON 파싱/검증)
     structured_llm = llm.with_structured_output(VisionOut)
     return vision_prompt | structured_llm
 
-async def run_vision(payload: Dict[str, Any], model_override: str | None = None) -> Dict[str, Any]:
+async def run_vision(
+    payload: Dict[str, Any],
+    model_override: str | None = None,
+    provider_override: str | None = None) -> Dict[str, Any]:
     options = payload.get("optionsByDef") or {}
     def_list = ", ".join(payload.get("definitionNames", [])[:50]) or ", ".join(options.keys()) or "색상, 사이즈, 재질, 핏, 길이"
     options_json = json.dumps(options, ensure_ascii=False)
@@ -30,7 +37,9 @@ async def run_vision(payload: Dict[str, Any], model_override: str | None = None)
         "image_url": payload.get("imageUrl") or "",
     }
 
-    chain = build_vision_chain(model_override=model_override)
+    chain = build_vision_chain(
+        model_override=model_override,
+        provider_override=provider_override)
     # (멀티모달) 모델이 이미지를 직접 받을 수 있다면 메시지에 이미지 첨부 (OpenAI/Gemini 일부 모델)
     # 여기선 프롬프트에 imageUrl을 텍스트로 제공하고, 추후 provider별 확장을 providers.py에서 처리
 

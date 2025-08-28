@@ -11,7 +11,12 @@ async def analyze_vision(req: VisionRequest,
     x_provider: str | None = Header(default=None)):
     try:
         # provider 전환은 providers.py에서 ENV로 처리하되, 헤더로도 허용하려면 os.environ 갱신 로직 추가 가능
-        result = await run_vision(req.model_dump(), model_override=x_model_name)
+        # result = await run_vision(req.model_dump(), model_override=x_model_name)
+        result = await run_vision(
+            req.model_dump(),
+            model_override=x_model_name,
+            provider_override=x_provider,   # ✅ Spring 헤더 반영
+        )
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"LLM_CALL_FAILED: {e}")
